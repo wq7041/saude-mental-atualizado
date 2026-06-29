@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Pessoal · Mente em Equilíbrio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/dashboard-pessoal.css">
+</head>
+<body>
+    <div class="bg-ambient">
+        <div class="bg-orb bg-orb--1"></div>
+        <div class="bg-orb bg-orb--2"></div>
+        <div class="bg-orb bg-orb--3"></div>
+    </div>
+    <div class="bg-grid"></div>
+
+    <nav class="navbar" id="navbar">
+        <a href="index.html" class="navbar-brand">
+            <span class="navbar-brand-icon"><i class="fa-solid fa-brain"></i></span>
+            Mente em Equilíbrio
+        </a>
+        <ul class="navbar-links">
+            <li><a href="index.html">Início</a></li>
+            <li><a href="perfil.html"><i class="fa-solid fa-user"></i> Perfil</a></li>
+            <li><a href="#" id="logoutLink"><i class="fa-solid fa-right-from-bracket"></i> Sair</a></li>
+        </ul>
+    </nav>
+
+    <div class="dashboard-wrapper">
+        <h1 class="dashboard-title">Bem-vindo, <span id="nomeUsuario">usuário</span>!</h1>
+        <p class="dashboard-subtitle">Acompanhe seu bem-estar, tarefas e registros emocionais.</p>
+
+        <div class="checkin-section">
+            <h3>Como você está hoje?</h3>
+            <div class="emotion-selector" id="emotionSelector">
+                <button class="emotion-btn" data-emotion="😄">😄</button>
+                <button class="emotion-btn" data-emotion="😊">😊</button>
+                <button class="emotion-btn" data-emotion="😐">😐</button>
+                <button class="emotion-btn" data-emotion="😕">😕</button>
+                <button class="emotion-btn" data-emotion="😢">😢</button>
+            </div>
+        </div>
+
+        <div class="dashboard-grid-2col">
+            <div class="dash-card" id="tarefasCard">
+                <div class="dash-card-header">
+                    <h3>📋 Tarefas</h3>
+                    <button class="btn btn-sm btn-primary" id="novaTarefaBtn">+ Nova</button>
+                </div>
+                <input type="text" id="buscaTarefas" placeholder="🔍 Buscar tarefas..." class="busca-input">
+                <div class="nova-tarefa-inline" id="novaTarefaInline" style="display:none;">
+                    <input type="text" id="tarefaTitulo" placeholder="Título da tarefa">
+                    <textarea id="tarefaDescricao" rows="2" placeholder="Descrição (opcional)"></textarea>
+                    <div style="display:flex; gap:10px; margin-top:8px;">
+                        <button class="btn btn-sm btn-primary" id="salvarTarefaInline">Salvar</button>
+                        <button class="btn btn-sm btn-secondary" id="cancelarTarefaInline">Cancelar</button>
+                    </div>
+                </div>
+                <div class="task-list" id="taskList"></div>
+            </div>
+
+            <div class="dash-card" id="diarioCard">
+                <div class="dash-card-header">
+                    <h3>📝 Diário Emocional</h3>
+                    <button class="btn btn-sm btn-secondary" id="exportarBtn"><i class="fa-solid fa-download"></i> Exportar</button>
+                </div>
+                <div class="diary-entries" id="diaryEntries"></div>
+                <textarea id="diaryText" rows="3" placeholder="Escreva sobre seu dia..."></textarea>
+                <button class="btn btn-primary btn-full" id="salvarDiarioBtn">Salvar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script>
+        Auth.requireAuth();
+                async function atualizarNomeDashboard() {
+            try {
+                const resp = await fetch('../api/perfil.php', { headers: Auth.authHeaders() });
+                const data = await resp.json();
+                if (data && !data.erro) {
+                    document.getElementById('nomeUsuario').textContent = data.nome || 'usuário';
+                    // Atualiza o localStorage também
+                    const usuario = Auth.getUsuario() || {};
+                    usuario.nome = data.nome;
+                    localStorage.setItem('usuario', JSON.stringify(usuario));
+                }
+            } catch (e) {
+                const usuario = Auth.getUsuario();
+                document.getElementById('nomeUsuario').textContent = usuario?.nome || 'usuário';
+            }
+        }
+        atualizarNomeDashboard();
+        document.getElementById('logoutLink').addEventListener('click', e => { e.preventDefault(); Auth.logout(); });
+
+        // Check‑in
+        document.getElementById('emotionSelector').addEventListener('click', async (e) => {
+            if (!e.target.classList.contains('emotion-btn')) return;
+            const emocao = e.target.dataset.emotion;
+            document.querySelectorAll('.emotion-btn').forEach(b => b.classList.remove('selected'));
+            e.target.classList.add('selected');
+            try {
+                await fetch('../api/checkin-humor.php', {
+                    method: 'POST',
+                    headers: Auth.authHeaders(),
+                    body: JSON.stringify({ emocao, data: new Date().toISOString().split('T')[0] })
+                });
+            } catch (err) { console.error(err); }
+        });
+
+        // Tarefas
+        const novaTarefaInline = document.getElementById('novaTarefaInline');
+        document.getElementById('novaTarefaBtn').addEventListener('click', () => {
+            novaTarefaInline.style.display = 'block';
+            document.getElementById('tarefaTitulo').value = '';
+            document.getElementById('tarefaDescricao').value = '';
+            document.getElementById('tarefaTitulo').focus();
+        });
+        document.getElementById('cancelarTarefaInline').addEventListener('click', () => novaTarefaInline.style.display = 'none');
+        document.getElementById('salvarTarefaInline').addEventListener('click', async () => {
+            const titulo = document.getElementById('tarefaTitulo').value.trim();
+            const descricao = document.getElementById('tarefaDescricao').value.trim();
+            if (!titulo) return alert('Digite um título.');
+            await fetch('../api/tarefas.php', { method: 'POST', headers: Auth.authHeaders(), body: JSON.stringify({ titulo, descricao }) });
+            novaTarefaInline.style.display = 'none';
+            carregarTarefas();
+        });
+
+        async function carregarTarefas() {
+            const busca = document.getElementById('buscaTarefas')?.value || '';
+            const resp = await fetch(`../api/tarefas.php?busca=${encodeURIComponent(busca)}`, { headers: Auth.authHeaders() });
+            const tarefas = await resp.json();
+            document.getElementById('taskList').innerHTML = tarefas.map(t => `
+                <div class="task-item ${t.concluida == 1 ? 'concluida' : ''}" onclick="this.classList.toggle('expandida')">
+                    <div class="task-row">
+                        <input type="checkbox" ${t.concluida == 1 ? 'checked' : ''} onchange="event.stopPropagation(); toggleTarefa(${t.id}, this.checked)">
+                        <strong>${t.titulo}</strong>
+                        ${t.fixada == 1 ? '<span style="color:var(--accent-amber); margin-left:4px;">📌</span>' : ''}
+                        <button onclick="event.stopPropagation(); toggleFixar(${t.id}, ${t.fixada})" class="btn-icon" title="Fixar"><i class="fa-solid fa-thumbtack"></i></button>
+                        <button onclick="event.stopPropagation(); excluirTarefa(${t.id})" class="btn-icon delete"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                    <div class="descricao">${t.descricao || 'Sem descrição'}</div>
+                </div>
+            `).join('');
+        }
+        window.toggleTarefa = async (id, concluida) => {
+            await fetch('../api/tarefas.php', { method: 'PUT', headers: Auth.authHeaders(), body: JSON.stringify({ id, concluida: concluida ? 1 : 0 }) });
+            carregarTarefas();
+        };
+        window.excluirTarefa = async (id) => {
+            if (!confirm('Excluir esta tarefa?')) return;
+            await fetch(`../api/tarefas.php?id=${id}`, { method: 'DELETE', headers: Auth.authHeaders() });
+            carregarTarefas();
+        };
+        function debounce(func, delay) { let timer; return (...args) => { clearTimeout(timer); timer = setTimeout(() => func(...args), delay); }; }
+        window.toggleFixar = async (id, fixada) => {
+            await fetch('../api/tarefas.php', { method: 'PUT', headers: Auth.authHeaders(), body: JSON.stringify({ id, fixada: fixada ? 0 : 1 }) });
+            carregarTarefas();
+        };
+        document.getElementById('buscaTarefas').addEventListener('input', debounce(() => carregarTarefas(), 300));
+
+        // Diário
+        async function carregarDiario() {
+            const resp = await fetch('../api/diario.php', { headers: Auth.authHeaders() });
+            const entradas = await resp.json();
+            const usuario = Auth.getUsuario();
+            const nomeUsuario = usuario?.nome || 'Você';
+            document.getElementById('diaryEntries').innerHTML = entradas.slice(0, 10).map(e => {
+                const data = new Date(e.data_registro);
+                const dataFormatada = data.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', hour12: false }).replace(/(\d{2}:\d{2}):\d{2}/, '$1');
+                return `
+                    <div class="diary-entry">
+                        <div class="diary-top">
+                            <div class="diary-user">
+                                <span class="diary-avatar-placeholder"><i class="fa-solid fa-user"></i></span>
+                                <strong>${nomeUsuario}</strong>
+                            </div>
+                            <span class="diary-emotion">${e.emocao}</span>
+                        </div>
+                        <span class="diary-date">${dataFormatada}</span>
+                        <p class="diary-text">${e.texto}</p>
+                        <button class="btn-icon delete" onclick="excluirDiario(${e.id})" title="Apagar"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                `;
+            }).join('');
+        }
+        window.excluirDiario = async (id) => {
+            if (!confirm('Apagar esta entrada do diário?')) return;
+            await fetch(`../api/diario.php?id=${id}`, { method: 'DELETE', headers: Auth.authHeaders() });
+            carregarDiario();
+        };
+
+        document.getElementById('salvarDiarioBtn').addEventListener('click', async () => {
+            const texto = document.getElementById('diaryText').value.trim();
+            const emocao = document.querySelector('.emotion-btn.selected')?.dataset.emotion || '😐';
+            if (!texto) return alert('Escreva algo.');
+            await fetch('../api/diario.php', { method: 'POST', headers: Auth.authHeaders(), body: JSON.stringify({ emocao, texto }) });
+            document.getElementById('diaryText').value = '';
+            carregarDiario();
+        });
+
+        // Exportar
+        document.getElementById('exportarBtn').addEventListener('click', async () => {
+            const resp = await fetch('../api/diario.php', { headers: Auth.authHeaders() });
+            const entradas = await resp.json();
+            if (!entradas.length) return alert('Nada para exportar.');
+            const selecionadas = entradas.filter(e => confirm(`Exportar entrada de ${new Date(e.data_registro).toLocaleDateString('pt-BR')}?\n"${e.texto}"`));
+            if (!selecionadas.length) return;
+            let csv = 'data,emocao,texto\n';
+            selecionadas.forEach(e => {
+                csv += `${e.data_registro},${e.emocao},"${e.texto}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'meu_diario.csv';
+            a.click();
+        });
+
+        carregarTarefas();
+        carregarDiario();
+    </script>
+</body>
+</html>

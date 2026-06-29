@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrar · Mente em Equilíbrio</title>
+
+    <!-- Fonts e ícones -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- CSS globais -->
+    <link rel="stylesheet" href="../css/main.css">
+    <!-- CSS específico da página de login -->
+    <link rel="stylesheet" href="../css/login.css">
+</head>
+<body>
+    <!-- Fundo ambiente (orbes e grid) -->
+    <div class="bg-ambient">
+        <div class="bg-orb bg-orb--1"></div>
+        <div class="bg-orb bg-orb--2"></div>
+        <div class="bg-orb bg-orb--3"></div>
+    </div>
+    <div class="bg-grid"></div>
+
+    <div class="login-wrapper">
+        <div class="login-card">
+            <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Voltar ao início</a>
+            <h2>🧠 Mente em Equilíbrio</h2>
+            <p class="subtitle">Acesse sua conta para continuar</p>
+
+            <div id="erroMsg" class="erro-msg"></div>
+
+            <form id="loginForm" novalidate>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="seu@email.com" required autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" placeholder="••••••" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-full" id="loginBtn">
+                    <span class="spinner"></span>
+                    <span class="btn-text"><i class="fa-solid fa-right-to-bracket"></i> Entrar</span>
+                </button>
+            </form>
+
+            <div class="links-bottom">
+                <p style="margin-bottom:6px;">Não tem uma conta? <a href="cadastro.html">Criar conta</a></p>
+                <p><a href="recuperar-senha.html" class="forgot">Esqueci minha senha</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            function setSession(token, usuario) {
+                localStorage.setItem('token', token);
+                localStorage.setItem('usuario', JSON.stringify(usuario));
+            }
+
+            const form = document.getElementById('loginForm');
+            const erroMsg = document.getElementById('erroMsg');
+            const loginBtn = document.getElementById('loginBtn');
+            const emailInput = document.getElementById('email');
+            const senhaInput = document.getElementById('senha');
+
+            function showError(msg) {
+                erroMsg.textContent = msg;
+                erroMsg.style.display = 'block';
+            }
+            function hideError() {
+                erroMsg.style.display = 'none';
+            }
+            function setLoading(loading) {
+                if (loading) {
+                    loginBtn.classList.add('loading');
+                    loginBtn.disabled = true;
+                } else {
+                    loginBtn.classList.remove('loading');
+                    loginBtn.disabled = false;
+                }
+            }
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                hideError();
+                const email = emailInput.value.trim();
+                const senha = senhaInput.value;
+                if (!email || !senha) {
+                    showError('Preencha todos os campos.');
+                    return;
+                }
+                setLoading(true);
+                try {
+                    const resp = await fetch('../api/login.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, senha })
+                    });
+                    const data = await resp.json();
+                    if (!resp.ok || data.erro) {
+                        throw new Error(data.erro || 'Erro ao realizar login.');
+                    }
+                    setSession(data.token, data.usuario);
+                    window.location.href = 'dashboard-pessoal.html';
+                } catch (err) {
+                    console.error(err);
+                    showError(err.message || 'Erro de conexão com o servidor. Tente novamente.');
+                } finally {
+                    setLoading(false);
+                }
+            });
+        })();
+    </script>
+</body>
+</html>

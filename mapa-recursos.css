@@ -1,0 +1,112 @@
+/* ============================================
+   ESTILOS DO MAPA DE RECURSOS
+   ============================================ */
+
+.mapa-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 100px 24px 60px;
+}
+
+.section-title {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.section-subtitle {
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: var(--text-tertiary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color var(--transition-fast);
+}
+
+.back-link:hover { color: #fff; }
+
+.recursos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.recurso-card {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-lg);
+    padding: 25px;
+    transition: all var(--transition-smooth);
+}
+
+.recurso-card:hover {
+    border-color: var(--border-glass-hover);
+    box-shadow: var(--glow-card);
+    transform: translateY(-4px);
+}
+
+.recurso-icone {
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-sm);
+    background: rgba(124, 58, 237, 0.2);
+    color: var(--accent-purple-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+}
+
+.recurso-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+}
+
+.recurso-card p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+}
+
+.recurso-card ul {
+    list-style: none;
+}
+
+.recurso-card ul li {
+    color: var(--text-tertiary);
+    font-size: 0.85rem;
+    margin-bottom: 4px;
+}
+
+.recurso-card a {
+    color: var(--accent-cyan-light);
+    text-decoration: none;
+}
+
+.recurso-card a:hover {
+    text-decoration: underline;
+}
+
+.aviso-medico {
+    background: rgba(244, 63, 94, 0.1);
+    border: 1px solid rgba(244, 63, 94, 0.2);
+    border-radius: var(--radius-md);
+    padding: 15px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: var(--accent-rose);
+    text-align: center;
+    justify-content: center;
+}

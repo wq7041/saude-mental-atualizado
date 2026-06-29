@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendário de Humor · Mente em Equilíbrio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/calendario-humor.css">
+</head>
+<body>
+    <div class="bg-ambient">
+        <div class="bg-orb bg-orb--1"></div>
+        <div class="bg-orb bg-orb--2"></div>
+        <div class="bg-orb bg-orb--3"></div>
+    </div>
+    <div class="bg-grid"></div>
+    <div class="dashboard-wrapper">
+        <a href="dashboard-pessoal.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Voltar</a>
+        <h2 class="section-title">📅 Calendário de Humor</h2>
+        <div class="calendario-container">
+            <div class="calendario-header">
+                <button id="prevMonth" class="btn btn-sm btn-secondary"><i class="fa-solid fa-chevron-left"></i></button>
+                <h3 id="currentMonthYear"></h3>
+                <button id="nextMonth" class="btn btn-sm btn-secondary"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+            <div class="calendario-grid" id="calendarioGrid"></div>
+        </div>
+    </div>
+    <script src="../js/auth.js"></script>
+    <script>
+        Auth.requireAuth();
+        let currentDate = new Date();
+
+        async function carregarCalendario() {
+            const mes = currentDate.getMonth() + 1;
+            const ano = currentDate.getFullYear();
+            document.getElementById('currentMonthYear').textContent = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' }).format(currentDate);
+            const resp = await fetch(`../api/calendario-humor.php?mes=${mes}&ano=${ano}`, { headers: Auth.authHeaders() });
+            const dados = await resp.json();
+            const primeiroDia = new Date(ano, mes-1, 1).getDay();
+            const ultimoDia = new Date(ano, mes, 0).getDate();
+            let html = '';
+            for (let i = 0; i < primeiroDia; i++) html += '<div class="calendario-dia vazio"></div>';
+            for (let d = 1; d <= ultimoDia; d++) {
+                const emocao = dados[d] || '';
+                html += `<div class="calendario-dia">${d}<span class="emocao">${emocao}</span></div>`;
+            }
+            document.getElementById('calendarioGrid').innerHTML = html;
+        }
+
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            carregarCalendario();
+        });
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            carregarCalendario();
+        });
+
+        carregarCalendario();
+    </script>
+</body>
+</html>

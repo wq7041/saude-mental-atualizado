@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redefinir Senha · Mente em Equilíbrio</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/recuperar-senha.css">
+</head>
+<body>
+    <div class="bg-ambient">
+        <div class="bg-orb bg-orb--1"></div>
+        <div class="bg-orb bg-orb--2"></div>
+        <div class="bg-orb bg-orb--3"></div>
+    </div>
+    <div class="bg-grid"></div>
+
+    <div class="login-wrapper">
+        <div class="login-card">
+            <a href="login.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Voltar ao login</a>
+            <h2>🔐 Redefinir senha</h2>
+            <p class="subtitle">Digite o token recebido e sua nova senha.</p>
+
+            <div id="erroMsg" class="erro-msg"></div>
+            <div id="sucessoMsg" class="sucesso-msg"></div>
+
+            <form id="resetForm" novalidate>
+                <div class="form-group">
+                    <label for="token">Token de recuperação</label>
+                    <input type="text" id="token" placeholder="Cole o token aqui" required>
+                </div>
+                <div class="form-group">
+                    <label for="senha">Nova senha</label>
+                    <input type="password" id="senha" placeholder="Mínimo 6 caracteres" required autocomplete="new-password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-full" id="resetBtn">
+                    <span class="spinner"></span>
+                    <span class="btn-text"><i class="fa-solid fa-check"></i> Redefinir senha</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const form = document.getElementById('resetForm');
+            const erroMsg = document.getElementById('erroMsg');
+            const sucessoMsg = document.getElementById('sucessoMsg');
+            const resetBtn = document.getElementById('resetBtn');
+
+            function showError(msg) {
+                erroMsg.textContent = msg;
+                erroMsg.style.display = 'block';
+                sucessoMsg.style.display = 'none';
+            }
+            function showSuccess(msg) {
+                sucessoMsg.textContent = msg;
+                sucessoMsg.style.display = 'block';
+                erroMsg.style.display = 'none';
+            }
+            function setLoading(loading) {
+                resetBtn.classList.toggle('loading', loading);
+                resetBtn.disabled = loading;
+            }
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const token = document.getElementById('token').value.trim();
+                const senha = document.getElementById('senha').value;
+                if (!token || !senha) return showError('Preencha todos os campos.');
+                if (senha.length < 6) return showError('A senha deve ter no mínimo 6 caracteres.');
+
+                setLoading(true);
+                try {
+                    const resp = await fetch('../api/resetar-senha.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ token, senha })
+                    });
+                    const data = await resp.json();
+                    if (data.erro) throw new Error(data.erro);
+                    showSuccess('Senha redefinida! Redirecionando para o login...');
+                    setTimeout(() => window.location.href = 'login.html', 2000);
+                } catch (err) {
+                    showError(err.message || 'Erro ao redefinir senha.');
+                } finally {
+                    setLoading(false);
+                }
+            });
+
+            document.getElementById('token').focus();
+        })();
+    </script>
+</body>
+</html>

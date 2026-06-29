@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Senha · Mente em Equilíbrio</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/recuperar-senha.css">
+</head>
+<body>
+    <div class="bg-ambient">
+        <div class="bg-orb bg-orb--1"></div>
+        <div class="bg-orb bg-orb--2"></div>
+        <div class="bg-orb bg-orb--3"></div>
+    </div>
+    <div class="bg-grid"></div>
+
+    <div class="login-wrapper">
+        <div class="login-card">
+            <a href="login.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Voltar ao login</a>
+            <h2>🔑 Esqueceu a senha?</h2>
+            <p class="subtitle">Digite seu email para receber o link de recuperação.</p>
+
+            <div id="erroMsg" class="erro-msg"></div>
+            <div id="sucessoMsg" class="sucesso-msg"></div>
+
+            <form id="recuperarForm" novalidate>
+                <div class="form-group">
+                    <label for="email">Email cadastrado</label>
+                    <input type="email" id="email" placeholder="seu@email.com" required autocomplete="email">
+                </div>
+                <button type="submit" class="btn btn-primary btn-full" id="recuperarBtn">
+                    <span class="spinner"></span>
+                    <span class="btn-text"><i class="fa-solid fa-paper-plane"></i> Enviar link</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const form = document.getElementById('recuperarForm');
+            const erroMsg = document.getElementById('erroMsg');
+            const sucessoMsg = document.getElementById('sucessoMsg');
+            const recuperarBtn = document.getElementById('recuperarBtn');
+            const emailInput = document.getElementById('email');
+
+            function showError(msg) {
+                erroMsg.textContent = msg;
+                erroMsg.style.display = 'block';
+                sucessoMsg.style.display = 'none';
+            }
+            function showSuccess(msg) {
+                sucessoMsg.textContent = msg;
+                sucessoMsg.style.display = 'block';
+                erroMsg.style.display = 'none';
+            }
+            function setLoading(loading) {
+                recuperarBtn.classList.toggle('loading', loading);
+                recuperarBtn.disabled = loading;
+            }
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = emailInput.value.trim();
+                if (!email) return showError('Digite seu email.');
+
+                setLoading(true);
+                try {
+                    const resp = await fetch('../api/recuperar-senha.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email })
+                    });
+                    const data = await resp.json();
+                    if (data.erro) throw new Error(data.erro);
+                    showSuccess('Se o email existir, um link de recuperação será enviado.');
+                } catch (err) {
+                    showError(err.message || 'Erro ao solicitar recuperação.');
+                } finally {
+                    setLoading(false);
+                }
+            });
+
+            emailInput.focus();
+        })();
+    </script>
+</body>
+</html>

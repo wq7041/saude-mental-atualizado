@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desabafar · Mente em Equilíbrio</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/desabafar.css">
+</head>
+<body>
+    <div class="bg-ambient">
+        <div class="bg-orb bg-orb--1"></div>
+        <div class="bg-orb bg-orb--2"></div>
+        <div class="bg-orb bg-orb--3"></div>
+    </div>
+    <div class="bg-grid"></div>
+
+    <div class="desabafar-wrapper">
+        <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Voltar ao início</a>
+        <h2 class="section-title">💬 Mural do Desabafo</h2>
+        <p class="section-subtitle">Aqui você pode escrever o que sente de forma totalmente anônima. Ninguém verá seu nome, apenas o que você escrever.</p>
+
+        <div id="erroMsg" class="erro-msg"></div>
+
+        <!-- Área de postagem (exige login) -->
+        <div class="post-area" id="postArea">
+            <textarea id="desabafoText" rows="4" placeholder="Escreva o que está sentindo..."></textarea>
+            <button class="btn btn-primary" id="postarBtn"><i class="fa-solid fa-paper-plane"></i> Postar anonimamente</button>
+        </div>
+        <div class="login-aviso" id="loginAviso" style="display:none;">
+            <p><a href="login.html">Faça login</a> para postar um desabafo.</p>
+        </div>
+
+        <!-- Lista de posts -->
+        <div class="posts-list" id="postsList"></div>
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script>
+        const postArea = document.getElementById('postArea');
+        const loginAviso = document.getElementById('loginAviso');
+        const postsList = document.getElementById('postsList');
+        const desabafoText = document.getElementById('desabafoText');
+        const postarBtn = document.getElementById('postarBtn');
+        const erroMsg = document.getElementById('erroMsg');
+
+        // Mostrar/esconder área de postagem conforme login
+        if (Auth.isLogged()) {
+            postArea.style.display = '';
+            loginAviso.style.display = 'none';
+        } else {
+            postArea.style.display = 'none';
+            loginAviso.style.display = '';
+        }
+
+        // Carregar posts públicos
+        async function carregarPosts() {
+            try {
+                const resp = await fetch('../api/desabafar.php');
+                const posts = await resp.json();
+                postsList.innerHTML = posts.map(p => `
+                    <div class="post-card">
+                        <p class="post-texto">${p.texto}</p>
+                        <span class="post-data">${new Date(p.data_postagem).toLocaleString('pt-BR')}</span>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Postar novo desabafo
+        postarBtn.addEventListener('click', async () => {
+            const texto = desabafoText.value.trim();
+            if (!texto) {
+                erroMsg.textContent = 'Escreva algo antes de postar.';
+                erroMsg.style.display = 'block';
+                return;
+            }
+            erroMsg.style.display = 'none';
+            try {
+                const resp = await fetch('../api/desabafar.php', {
+                    method: 'POST',
+                    headers: Auth.authHeaders(),
+                    body: JSON.stringify({ texto })
+                });
+                const data = await resp.json();
+                if (data.erro) throw new Error(data.erro);
+                desabafoText.value = '';
+                carregarPosts();
+            } catch (err) {
+                erroMsg.textContent = err.message;
+                erroMsg.style.display = 'block';
+            }
+        });
+
+        carregarPosts();
+    </script>
+</body>
+</html>

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mente em Equilíbrio | Dashboard de Saúde Mental Estudantil</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+
+    <!-- CSS globais -->
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader-ring"></div>
+        <p class="loader-text">Preparando o Dashboard...</p>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div class="custom-cursor" id="customCursor"></div>
+    <div class="custom-cursor-dot" id="customCursorDot"></div>
+
+    <!-- Background Ambient -->
+    <div class="bg-ambient">
+        <div class="bg-orb bg-orb--1"></div>
+        <div class="bg-orb bg-orb--2"></div>
+        <div class="bg-orb bg-orb--3"></div>
+    </div>
+    <div class="bg-grid"></div>
+
+    <!-- Floating Particles -->
+    <div class="floating-particles" id="floatingParticles"></div>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper" id="mainWrapper">
+
+        <!-- Navbar -->
+        <nav class="navbar" id="navbar">
+            <a href="#hero" class="navbar-brand">
+                <span class="navbar-brand-icon"><i class="fa-solid fa-brain"></i></span>
+                Mente em Equilíbrio
+            </a>
+            <ul class="navbar-links" id="navbarLinks">
+                <li><a href="#sobre" data-nav>Sobre</a></li>
+                <li><a href="#dashboard" data-nav>Dashboard</a></li>
+                <li><a href="#analises" data-nav>Análises</a></li>
+                <li><a href="#solucao" data-nav>Solução</a></li>
+                <li><a href="#conclusao" data-nav>Conclusão</a></li>
+                <li><a href="dashboard-pessoal.html"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
+                <li id="navAuthItem">
+                    <!-- Botão dinâmico: Entrar (se não logado) ou Perfil (se logado) -->
+                    <a href="login.html" class="navbar-cta" id="navAuthBtn">Entrar</a>
+                </li>
+            </ul>
+            <button class="navbar-toggle" id="navbarToggle" aria-label="Menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </nav>
+        <div class="nav-overlay" id="navOverlay"></div>
+
+        <!-- HERO -->
+        <section class="hero-section section" id="hero">
+            <div class="hero-inner">
+                <div class="hero-content reveal-left">
+                    <div class="hero-badge">
+                        <i class="fa-solid fa-circle"></i> Pesquisa IBGE · PeNSE 2012–2019
+                    </div>
+                    <h1 class="hero-title">
+                        Saúde Mental<br>
+                        <span class="highlight">dos Estudantes</span>
+                    </h1>
+                    <p class="hero-text">
+                        Um dashboard interativo que transforma dados públicos do IBGE em conhecimento.
+                        Analisamos o indicador de <strong>estudantes do 9º ano sem amigos próximos</strong> nas capitais brasileiras,
+                        com atenção especial a <strong>Curitiba</strong>.
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="#dashboard" class="btn btn-primary">
+                            <i class="fa-solid fa-chart-line"></i> Explorar Dashboard
+                        </a>
+                        <a href="#sobre" class="btn btn-secondary">
+                            <i class="fa-solid fa-circle-info"></i> Saber Mais
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-visual reveal-right">
+                    <div class="hero-svg-container">
+                        <div class="hero-orb-sm hero-orb-sm--1"></div>
+                        <div class="hero-orb-sm hero-orb-sm--2"></div>
+                        <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="gradBrain" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#4a6cf7"/>
+                                    <stop offset="50%" stop-color="#7c3aed"/>
+                                    <stop offset="100%" stop-color="#06b6d4"/>
+                                </linearGradient>
+                                <filter id="glowSvg">
+                                    <feGaussianBlur stdDeviation="6" result="blur"/>
+                                    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                                </filter>
+                            </defs>
+                            <circle cx="250" cy="250" r="220" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1.5" stroke-dasharray="8 12"/>
+                            <circle cx="250" cy="250" r="190" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1" stroke-dasharray="4 16"/>
+                            <path d="M250 90 C180 90 130 140 125 200 C120 250 140 280 160 300 C140 320 130 350 145 380 C160 410 200 420 250 420 C300 420 340 410 355 380 C370 350 360 320 340 300 C360 280 380 250 375 200 C370 140 320 90 250 90Z"
+                            fill="none" stroke="url(#gradBrain)" stroke-width="2.8" filter="url(#glowSvg)" opacity="0.9"/>
+                            <path d="M250 130 C200 130 170 165 165 210 C160 245 175 270 190 285 C175 300 168 325 178 348 C188 370 215 380 250 380 C285 380 312 370 322 348 C332 325 325 300 310 285 C325 270 340 245 335 210 C330 165 300 130 250 130Z"
+                            fill="rgba(74,108,247,0.06)" stroke="url(#gradBrain)" stroke-width="1.5" opacity="0.6"/>
+                            <circle cx="250" cy="200" r="8" fill="#4a6cf7" opacity="0.8"/>
+                            <circle cx="210" cy="260" r="6" fill="#7c3aed" opacity="0.8"/>
+                            <circle cx="290" cy="260" r="6" fill="#7c3aed" opacity="0.8"/>
+                            <circle cx="230" cy="330" r="7" fill="#06b6d4" opacity="0.8"/>
+                            <circle cx="270" cy="330" r="7" fill="#06b6d4" opacity="0.8"/>
+                            <circle cx="250" cy="370" r="5" fill="#14b8a6" opacity="0.7"/>
+                            <line x1="250" y1="200" x2="210" y2="260" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                            <line x1="250" y1="200" x2="290" y2="260" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                            <line x1="210" y1="260" x2="230" y2="330" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+                            <line x1="290" y1="260" x2="270" y2="330" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+                            <line x1="230" y1="330" x2="250" y2="370" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+                            <line x1="270" y1="330" x2="250" y2="370" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+                            <circle cx="250" cy="250" r="3" fill="#fff" opacity="0.5">
+                                <animate attributeName="cx" values="250;310;250;190;250" dur="8s" repeatCount="indefinite"/>
+                                <animate attributeName="cy" values="250;190;250;310;250" dur="8s" repeatCount="indefinite"/>
+                            </circle>
+                            <circle cx="250" cy="250" r="2" fill="#fff" opacity="0.4">
+                                <animate attributeName="cx" values="250;180;250;320;250" dur="10s" repeatCount="indefinite"/>
+                                <animate attributeName="cy" values="250;320;250;180;250" dur="10s" repeatCount="indefinite"/>
+                            </circle>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-indicator">
+                <span>Role para explorar</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+        </section>
+
+        <!-- SOBRE A PESQUISA -->
+        <section class="section" id="sobre">
+            <div class="section-header reveal">
+                <span class="section-label">Sobre a Pesquisa</span>
+                <h2 class="section-title">O que os dados do IBGE revelam?</h2>
+                <p class="section-subtitle">
+                    Utilizamos a <strong>PeNSE (Pesquisa Nacional de Saúde do Escolar)</strong> para analisar
+                    o percentual de estudantes do 9º ano que relatam <strong>não ter amigos próximos</strong>,
+                    um indicador relevante para a saúde mental.
+                </p>
+                <div class="accent-line"></div>
+            </div>
+            <div class="cards-grid">
+                <div class="card reveal reveal-delay-1">
+                    <div class="card-icon card-icon--blue"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+                    <h3 class="card-title">Indicador Analisado</h3>
+                    <p class="card-text">
+                        Percentual de escolares que afirmaram <strong>não possuir amigos próximos</strong>.
+                        Esse dado é um importante termômetro de vulnerabilidade social e emocional na adolescência.
+                    </p>
+                </div>
+                <div class="card reveal reveal-delay-2">
+                    <div class="card-icon card-icon--purple"><i class="fa-solid fa-database"></i></div>
+                    <h3 class="card-title">Fonte Confiável</h3>
+                    <p class="card-text">
+                        Dados oficiais da <strong>PeNSE/IBGE</strong>, coletados em 2012, 2015 e 2019 em escolas públicas
+                        e privadas de todas as capitais brasileiras.
+                    </p>
+                </div>
+                <div class="card reveal reveal-delay-3">
+                    <div class="card-icon card-icon--cyan"><i class="fa-solid fa-map-pin"></i></div>
+                    <h3 class="card-title">Foco em Curitiba</h3>
+                    <p class="card-text">
+                        Destacamos <strong>Curitiba</strong> entre as capitais analisadas, comparando sua evolução
+                        com o total das capitais e identificando particularidades locais.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CARDS COM NÚMEROS -->
+        <section class="section">
+            <div class="stats-row reveal">
+                <div class="stat-item">
+                    <div class="stat-value blue counter" data-target="3.4" data-decimals="1">0</div>
+                    <div class="stat-label">% Total das Capitais (2012)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value purple counter" data-target="3.8" data-decimals="1">0</div>
+                    <div class="stat-label">% Total das Capitais (2015)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value cyan counter" data-target="3.2" data-decimals="1">0</div>
+                    <div class="stat-label">% Total das Capitais (2019)</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value rose counter" data-target="2.6" data-decimals="1">0</div>
+                    <div class="stat-label">% Curitiba (2019)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DASHBOARD PRINCIPAL -->
+        <section class="section" id="dashboard">
+            <div class="section-header reveal">
+                <span class="section-label">Dashboard Interativo</span>
+                <h2 class="section-title">Visualização dos Dados</h2>
+                <p class="section-subtitle">
+                    Gráficos baseados nos microdados da PeNSE/IBGE. Use os filtros para explorar diferentes visualizações.
+                </p>
+                <div class="accent-line"></div>
+            </div>
+            <div class="filter-pills reveal" id="filterPills">
+                <button class="filter-pill active" data-filter="all">Todos os Gráficos</button>
+                <button class="filter-pill" data-filter="linha">Tendência Temporal</button>
+                <button class="filter-pill" data-filter="barras">Comparação entre Capitais</button>
+                <button class="filter-pill" data-filter="rosca">Distribuição por Sexo</button>
+                <button class="filter-pill" data-filter="radar">Fatores Relacionados</button>
+            </div>
+            <div class="dashboard-grid" id="dashboardGrid">
+                <!-- Gráfico de Linha -->
+                <div class="dashboard-card reveal" data-chart-type="linha" style="grid-column: 1 / -1;">
+                    <div class="dashboard-card-header">
+                        <span class="dashboard-card-title">📈 Tendência Temporal: % sem amigos próximos</span>
+                        <span class="dashboard-card-badge">Total das Capitais vs Curitiba</span>
+                    </div>
+                    <div class="chart-container chart-container-lg">
+                        <canvas id="chartLinha"></canvas>
+                    </div>
+                    <div class="dashboard-insight">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <span><strong>Insight:</strong> Após leve alta em 2015 (3,8%), o índice nacional caiu para 3,2% em 2019 — patamar inferior ao de 2012. Curitiba acompanhou essa tendência de queda, registrando 2,6% em 2019.</span>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Barras -->
+                <div class="dashboard-card reveal" data-chart-type="barras">
+                    <div class="dashboard-card-header">
+                        <span class="dashboard-card-title">📊 Capitais Selecionadas (2019)</span>
+                        <span class="dashboard-card-badge">Destaque Curitiba</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartBarras"></canvas>
+                    </div>
+                    <div class="dashboard-insight">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <span><strong>Curitiba (2,6%)</strong> está entre as capitais com menor percentual, abaixo da média das capitais (3,2%).</span>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Rosca -->
+                <div class="dashboard-card reveal" data-chart-type="rosca">
+                    <div class="dashboard-card-header">
+                        <span class="dashboard-card-title">🍩 Distribuição por Sexo (Total Capitais 2019)</span>
+                        <span class="dashboard-card-badge">Homens vs Mulheres</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartRosca"></canvas>
+                    </div>
+                    <div class="dashboard-insight">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <span>Os <strong>meninos</strong> relatam percentual maior (4,0%) do que as meninas (2,7%), padrão observado também em 2012 e 2015.</span>
+                    </div>
+                </div>
+
+                <!-- Gráfico Radar -->
+                <div class="dashboard-card reveal" data-chart-type="radar">
+                    <div class="dashboard-card-header">
+                        <span class="dashboard-card-title">🎯 Fatores Relacionados (2019)</span>
+                        <span class="dashboard-card-badge">Análise Contextual</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="chartRadar"></canvas>
+                    </div>
+                    <div class="dashboard-insight">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <span>Estudantes sem amigos próximos também tendem a relatar maior <strong>sentimento de solidão</strong> e <strong>insatisfação com a vida</strong>.</span>
+                    </div>
+                </div>
+
+                <!-- Gráfico de Área -->
+                <div class="dashboard-card reveal" data-chart-type="linha" style="grid-column: 1 / -1;">
+                    <div class="dashboard-card-header">
+                        <span class="dashboard-card-title">📉 Evolução por Dependência Administrativa (Total Capitais)</span>
+                        <span class="dashboard-card-badge">Pública vs Privada</span>
+                    </div>
+                    <div class="chart-container chart-container-lg">
+                        <canvas id="chartArea"></canvas>
+                    </div>
+                    <div class="dashboard-insight">
+                        <i class="fa-solid fa-lightbulb"></i>
+                        <span>As escolas <strong>públicas</strong> apresentam percentuais mais elevados, mas ambas as redes mostram queda consistente entre 2015 e 2019.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ANÁLISES -->
+        <section class="section" id="analises">
+            <div class="section-header reveal">
+                <span class="section-label">Análises</span>
+                <h2 class="section-title">O que os números nos contam</h2>
+                <p class="section-subtitle">
+                    Uma leitura cuidadosa dos dados da PeNSE revela tendências importantes sobre amizade e saúde mental.
+                </p>
+                <div class="accent-line"></div>
+            </div>
+            <div class="cards-grid">
+                <div class="card reveal reveal-delay-1">
+                    <div class="card-icon card-icon--teal"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                    <h3 class="card-title">Queda entre 2015 e 2019</h3>
+                    <p class="card-text">
+                        O total das capitais caiu de <strong>3,8% para 3,2%</strong> entre 2015 e 2019. Essa redução pode
+                        refletir maior atenção ao bem-estar escolar e ações de acolhimento.
+                    </p>
+                </div>
+                <div class="card reveal reveal-delay-2">
+                    <div class="card-icon card-icon--purple"><i class="fa-solid fa-venus-mars"></i></div>
+                    <h3 class="card-title">Diferença entre Sexos</h3>
+                    <p class="card-text">
+                        Em todos os anos, <strong>meninos relatam mais a falta de amigos</strong> do que meninas.
+                        Em 2019: 4,0% (homens) vs 2,7% (mulheres). Um dado que merece atenção nas políticas escolares.
+                    </p>
+                </div>
+                <div class="card reveal reveal-delay-3">
+                    <div class="card-icon card-icon--cyan"><i class="fa-solid fa-school"></i></div>
+                    <h3 class="card-title">Rede Pública vs Privada</h3>
+                    <p class="card-text">
+                        Escolas públicas têm índices mais altos (3,7% em 2019) do que as privadas (1,9%). A diferença
+                        reforça a importância do suporte social em contextos de maior vulnerabilidade.
+                    </p>
+                </div>
+            </div>
+            <div class="quote-block reveal" style="margin-top: 50px;">
+                "A amizade é um fator de proteção essencial na adolescência. A escola é o espaço onde essas conexões
+                podem florescer — e os dados mostram que estamos no caminho certo."
+            </div>
+        </section>
+
+        <!-- SOLUÇÃO DIGITAL (PLATAFORMA) -->
+        <section class="section" id="solucao">
+            <div class="section-header reveal">
+                <span class="section-label">Solução Digital</span>
+                <h2 class="section-title">Plataforma Mente em Equilíbrio</h2>
+                <p class="section-subtitle">
+                    Uma proposta de plataforma digital para fortalecer a saúde mental dos estudantes com base em evidências.
+                </p>
+                <div class="accent-line"></div>
+            </div>
+            <div class="solution-grid">
+                <!-- 1. Exercícios de Respiração -->
+                <div class="solution-card reveal reveal-delay-1" onclick="navigateTo('exercicios')">
+                    <span class="solution-card-icon">🧘</span>
+                    <h4 class="solution-card-title">Exercícios de Respiração</h4>
+                    <p class="solution-card-text">Técnicas guiadas para reduzir a ansiedade e melhorar o foco.</p>
+                </div>
+                <!-- 4. Frases Motivacionais -->
+                <div class="solution-card reveal reveal-delay-4" onclick="navigateTo('frases')">
+                    <span class="solution-card-icon">🌟</span>
+                    <h4 class="solution-card-title">Frases Motivacionais</h4>
+                    <p class="solution-card-text">Mensagens diárias para inspirar e fortalecer a autoestima.</p>
+                </div>
+                <!-- 6. Espaço de Apoio (último) -->
+                <div class="solution-card reveal reveal-delay-2" onclick="navigateTo('apoio')">
+                    <span class="solution-card-icon">💬</span>
+                    <h4 class="solution-card-title">Espaço de Apoio</h4>
+                    <p class="solution-card-text">Canal de escuta ativa com profissionais para suporte emocional.</p>
+                </div>
+        </section>
+
+        <!-- TIMELINE -->
+        <section class="section">
+            <div class="section-header reveal">
+                <span class="section-label">Linha do Tempo</span>
+                <h2 class="section-title">Evolução do Indicador</h2>
+                <p class="section-subtitle">
+                    Acompanhe a trajetória do percentual de estudantes sem amigos próximos nas três edições da PeNSE.
+                </p>
+                <div class="accent-line"></div>
+            </div>
+            <div class="timeline reveal">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2012</div>
+                    <p class="timeline-text">
+                        <strong>3,4%</strong> dos estudantes das capitais não tinham amigos próximos.
+                        Curitiba registrou <strong>3,1%</strong>. A pesquisa começava a mapear a saúde mental escolar.
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2015</div>
+                    <p class="timeline-text">
+                        O índice subiu para <strong>3,8%</strong> nas capitais e <strong>3,7%</strong> em Curitiba.
+                        O aumento, embora pequeno, acendeu alertas sobre a pressão social e acadêmica.
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-year">2019</div>
+                    <p class="timeline-text">
+                        Queda para <strong>3,2%</strong> nas capitais e <strong>2,6%</strong> em Curitiba.
+                        Uma melhora significativa que sugere efeitos positivos de iniciativas de acolhimento escolar.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONCLUSÃO -->
+        <section class="section" id="conclusao">
+            <div class="section-header reveal">
+                <span class="section-label">Conclusão</span>
+                <h2 class="section-title">Dados que fazem a diferença</h2>
+                <p class="section-subtitle">
+                    A Ciência de Dados nos ajuda a enxergar o panorama real e orientar ações eficazes.
+                </p>
+                <div class="accent-line"></div>
+            </div>
+            <div class="cards-grid">
+                <div class="card reveal reveal-delay-1">
+                    <div class="card-icon card-icon--teal"><i class="fa-solid fa-lightbulb"></i></div>
+                    <h3 class="card-title">Evidência, não suposição</h3>
+                    <p class="card-text">
+                        Os dados da PeNSE mostram uma <strong>tendência de melhora</strong> entre 2015 e 2019, mas
+                        ainda há desafios, especialmente entre meninos e na rede pública.
+                    </p>
+                </div>
+                <div class="card reveal reveal-delay-2">
+                    <div class="card-icon card-icon--blue"><i class="fa-solid fa-heart"></i></div>
+                    <h3 class="card-title">Saúde Mental é prioridade</h3>
+                    <p class="card-text">
+                        Cuidar da saúde mental dos jovens é um investimento no futuro. A escola tem papel central
+                        na criação de vínculos e redes de apoio.
+                    </p>
+                </div>
+                <div class="card reveal reveal-delay-3">
+                    <div class="card-icon card-icon--purple"><i class="fa-solid fa-chart-simple"></i></div>
+                    <h3 class="card-title">Ciência de Dados aplicada</h3>
+                    <p class="card-text">
+                        Transformar dados brutos em conhecimento acessível permite que educadores e gestores tomem
+                        decisões baseadas em fatos, não em intuições.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h4>Mente em Equilíbrio</h4>
+                    <p>Dashboard Interativo de Ciência de Dados sobre Saúde Mental dos Estudantes.</p>
+                    <p>Projeto acadêmico · Disciplina de Ciência de Dados</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Links</h4>
+                    <a href="#sobre">Sobre a Pesquisa</a>
+                    <a href="#dashboard">Dashboard</a>
+                    <a href="#analises">Análises</a>
+                    <a href="#solucao">Solução Digital</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Contato</h4>
+                    <p>contato@menteequilibrio.com</p>
+                    <p>Curitiba · Paraná · Brasil</p>
+                    <p>Fonte: IBGE · PeNSE 2012/2015/2019</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Mente em Equilíbrio. Todos os direitos reservados. Projeto escolar.</p>
+            </div>
+        </footer>
+
+        <!-- Back to Top -->
+        <button class="back-to-top" id="backToTop" aria-label="Voltar ao topo">
+            <i class="fa-solid fa-arrow-up"></i>
+        </button>
+    </div>
+
+    <!-- SUBPÁGINAS -->
+    <!-- Exercícios de Respiração -->
+    <div class="subpage" id="subpage-exercicios">
+        <button class="subpage-back" onclick="closeSubpage()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        <div class="subpage-content">
+            <h2 class="subpage-title">🧘 Exercícios de Respiração</h2>
+            <p style="text-align:center; margin-bottom:30px;">Escolha uma técnica e siga o círculo por 2 minutos.</p>
+            <div class="breathing-exercise" id="breathingBox">
+                <h3 id="breathingName">Respiração Diafragmática</h3>
+                <div class="breathing-circle" id="breathingCircle">Inspira</div>
+                <div class="breathing-timer" id="breathingTimer">02:00</div>
+                <button class="btn btn-primary" id="breathingStart">Iniciar</button>
+                <div style="margin-top:15px;">
+                    <button class="btn btn-sm btn-secondary" onclick="switchBreathing(0)">Diafragmática</button>
+                    <button class="btn btn-sm btn-secondary" onclick="switchBreathing(1)">4-7-8</button>
+                    <button class="btn btn-sm btn-secondary" onclick="switchBreathing(2)">Box Breathing</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Frases Motivacionais -->
+    <div class="subpage" id="subpage-frases">
+        <button class="subpage-back" onclick="closeSubpage()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        <div class="subpage-content">
+            <h2 class="subpage-title">🌟 Frases Motivacionais</h2>
+            <div class="quote-box" id="quoteDisplay">"Acredite em você mesmo e tudo será possível."</div>
+            <button class="btn btn-primary" onclick="newQuote()">Nova Frase</button>
+            <button class="btn btn-secondary" onclick="favoriteQuote()" style="margin-left:10px;"><i class="fa-regular fa-heart"></i> Favoritar</button>
+            <div class="diary-entries" id="favQuotes" style="margin-top:20px;"></div>
+        </div>
+    </div>
+    <!-- Espaço de Apoio -->
+    <div class="subpage" id="subpage-apoio">
+        <button class="subpage-back" onclick="closeSubpage()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
+        <div class="subpage-content">
+            <h2 class="subpage-title">💬 Espaço de Apoio</h2>
+            <p style="text-align:center;">Você não está sozinho. Conte com esses recursos.</p>
+            <div class="support-number">188</div>
+            <p style="text-align:center; font-size:1.2rem;">Central de Valorização da Vida (CVV)</p>
+            <p style="text-align:center;">Ligue gratuitamente ou acesse o chat online 24h.</p>
+            <div class="support-links">
+                <a href="https://www.cvv.org.br" target="_blank"><i class="fa-solid fa-globe"></i> Site do CVV</a>
+                <a href="https://www.cvv.org.br/chat" target="_blank"><i class="fa-solid fa-comments"></i> Chat Online</a>
+                <a href="https://www.gov.br/saude" target="_blank"><i class="fa-solid fa-hospital"></i> Ministério da Saúde</a>
+                <a href="https://www.setembroamarelo.com" target="_blank"><i class="fa-solid fa-ribbon"></i> Setembro Amarelo</a>
+                <a href="https://www.paho.org" target="_blank"><i class="fa-solid fa-earth-americas"></i> OPAS/OMS</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="../js/auth.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        // Atualiza o botão da navbar conforme autenticação
+        (function() {
+            const authBtn = document.getElementById('navAuthBtn');
+            if (Auth.isLogged()) {
+                authBtn.href = 'perfil.html';
+                authBtn.innerHTML = '<i class="fa-solid fa-user"></i> Perfil';
+            } else {
+                authBtn.href = 'login.html';
+                authBtn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Entrar';
+            }
+        })();
+    </script>
+</body>
+</html>

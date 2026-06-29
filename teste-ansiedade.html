@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Ansiedade · Mente em Equilíbrio</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/teste-ansiedade.css">
+</head>
+<body>
+    <div class="bg-ambient">
+        <div class="bg-orb bg-orb--1"></div>
+        <div class="bg-orb bg-orb--2"></div>
+        <div class="bg-orb bg-orb--3"></div>
+    </div>
+    <div class="bg-grid"></div>
+
+    <div class="teste-wrapper">
+        <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Voltar ao início</a>
+        <h2 class="section-title">🧠 Teste de Ansiedade (GAD-7)</h2>
+        <p class="section-subtitle">Responda às perguntas com sinceridade. Este teste não substitui uma avaliação profissional, mas pode ajudar a refletir sobre seu estado emocional.</p>
+
+        <div id="testeForm" class="teste-card">
+            <div id="perguntasContainer"></div>
+            <button class="btn btn-primary btn-full" id="calcularBtn">Ver Resultado</button>
+        </div>
+
+        <div id="resultadoContainer" class="resultado-card" style="display:none;">
+            <h3>Seu resultado</h3>
+            <div id="pontuacaoDisplay"></div>
+            <div id="interpretacaoDisplay"></div>
+            <div class="aviso-medico">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <span>Este teste é apenas informativo. Se os sintomas persistirem, procure um profissional de saúde mental.</span>
+            </div>
+            <a href="https://www.cvv.org.br" target="_blank" class="btn btn-secondary">Falar com o CVV (188)</a>
+            <button class="btn btn-primary" id="refazerBtn" style="margin-top:10px;">Refazer teste</button>
+        </div>
+    </div>
+
+    <script>
+        const perguntas = [
+            "Sentiu-se nervoso(a), ansioso(a) ou irritado(a)?",
+            "Não conseguiu parar de se preocupar ou controlar a preocupação?",
+            "Preocupou-se excessivamente com diversas coisas?",
+            "Teve dificuldade para relaxar?",
+            "Sentiu-se tão inquieto(a) que era difícil ficar parado(a)?",
+            "Ficou facilmente aborrecido(a) ou irritado(a)?",
+            "Sentiu medo como se algo terrível pudesse acontecer?"
+        ];
+        const opcoes = [
+            { valor: 0, texto: "Nenhuma vez" },
+            { valor: 1, texto: "Vários dias" },
+            { valor: 2, texto: "Mais da metade dos dias" },
+            { valor: 3, texto: "Quase todos os dias" }
+        ];
+
+        function montarTeste() {
+            const container = document.getElementById('perguntasContainer');
+            container.innerHTML = perguntas.map((p, i) => `
+                <div class="pergunta-item">
+                    <p class="pergunta-texto">${i + 1}. ${p}</p>
+                    <div class="opcoes-group">
+                        ${opcoes.map(o => `
+                            <label class="opcao-label">
+                                <input type="radio" name="p${i}" value="${o.valor}">
+                                <span>${o.texto}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function calcularResultado() {
+            let total = 0;
+            let respondidas = true;
+            perguntas.forEach((_, i) => {
+                const selected = document.querySelector(`input[name="p${i}"]:checked`);
+                if (!selected) respondidas = false;
+                else total += parseInt(selected.value);
+            });
+            if (!respondidas) {
+                alert('Responda todas as perguntas antes de ver o resultado.');
+                return;
+            }
+
+            let interpretacao = '';
+            if (total <= 4) interpretacao = 'Ansiedade mínima. Seus níveis de ansiedade estão dentro do esperado. Continue cuidando da sua saúde mental!';
+            else if (total <= 9) interpretacao = 'Ansiedade leve. Pode ser útil conversar com alguém de confiança ou praticar atividades relaxantes.';
+            else if (total <= 14) interpretacao = 'Ansiedade moderada. Considere buscar apoio profissional para avaliar seus sintomas.';
+            else interpretacao = 'Ansiedade severa. É fortemente recomendado procurar um profissional de saúde mental. Você não está sozinho(a)!';
+
+            document.getElementById('testeForm').style.display = 'none';
+            document.getElementById('resultadoContainer').style.display = '';
+            document.getElementById('pontuacaoDisplay').innerHTML = `<span class="pontuacao">${total}</span> / 21 pontos`;
+            document.getElementById('interpretacaoDisplay').innerHTML = `<p>${interpretacao}</p>`;
+        }
+
+        document.getElementById('calcularBtn').addEventListener('click', calcularResultado);
+        document.getElementById('refazerBtn').addEventListener('click', () => {
+            document.getElementById('testeForm').style.display = '';
+            document.getElementById('resultadoContainer').style.display = 'none';
+            montarTeste();
+        });
+
+        montarTeste();
+    </script>
+</body>
+</html>

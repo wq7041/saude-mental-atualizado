@@ -1,0 +1,98 @@
+/* ============================================
+   ESTILOS DO MURAL DO DESABAFO
+   ============================================ */
+
+.desabafar-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 100px 24px 60px;
+}
+
+.section-title {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.section-subtitle {
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: var(--text-tertiary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color var(--transition-fast);
+}
+
+.back-link:hover { color: #fff; }
+
+.post-area {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    margin-bottom: 30px;
+}
+
+.post-area textarea {
+    width: 100%;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-md);
+    padding: 15px;
+    color: #fff;
+    font-family: var(--font-body);
+    resize: vertical;
+    margin-bottom: 15px;
+}
+
+.post-card {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    margin-bottom: 12px;
+}
+
+.post-texto {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 8px;
+}
+
+.post-data {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.erro-msg {
+    color: var(--accent-rose);
+    background: rgba(244,63,94,0.1);
+    border: 1px solid rgba(244,63,94,0.3);
+    text-align: center;
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 20px;
+    display: none;
+    font-size: 0.9rem;
+}
+
+.login-aviso {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: var(--bg-glass);
+    border: 1px solid var(--border-glass);
+    border-radius: var(--radius-md);
+}
+
+.login-aviso a {
+    color: var(--accent-cyan-light);
+    text-decoration: none;
+}
