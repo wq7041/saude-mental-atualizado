@@ -357,19 +357,19 @@
             </div>
             <div class="solution-grid">
                 <!-- 1. Exercícios de Respiração -->
-                <div class="solution-card reveal reveal-delay-1" onclick="navigateTo('exercicios')">
+                <div class="solution-card reveal reveal-delay-1" onclick="window.location.href='exercicios.html'">
                     <span class="solution-card-icon">🧘</span>
                     <h4 class="solution-card-title">Exercícios de Respiração</h4>
                     <p class="solution-card-text">Técnicas guiadas para reduzir a ansiedade e melhorar o foco.</p>
                 </div>
                 <!-- 4. Frases Motivacionais -->
-                <div class="solution-card reveal reveal-delay-4" onclick="navigateTo('frases')">
+                <div class="solution-card reveal reveal-delay-4" onclick="window.location.href='frases.html'">
                     <span class="solution-card-icon">🌟</span>
                     <h4 class="solution-card-title">Frases Motivacionais</h4>
                     <p class="solution-card-text">Mensagens diárias para inspirar e fortalecer a autoestima.</p>
                 </div>
                 <!-- 6. Espaço de Apoio (último) -->
-                <div class="solution-card reveal reveal-delay-2" onclick="navigateTo('apoio')">
+                <div class="solution-card reveal reveal-delay-2" onclick="window.location.href='apoio.html'">
                     <span class="solution-card-icon">💬</span>
                     <h4 class="solution-card-title">Espaço de Apoio</h4>
                     <p class="solution-card-text">Canal de escuta ativa com profissionais para suporte emocional.</p>
@@ -483,57 +483,6 @@
         <button class="back-to-top" id="backToTop" aria-label="Voltar ao topo">
             <i class="fa-solid fa-arrow-up"></i>
         </button>
-    </div>
-
-    <!-- SUBPÁGINAS -->
-    <!-- Exercícios de Respiração -->
-    <div class="subpage" id="subpage-exercicios">
-        <button class="subpage-back" onclick="closeSubpage()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
-        <div class="subpage-content">
-            <h2 class="subpage-title">🧘 Exercícios de Respiração</h2>
-            <p style="text-align:center; margin-bottom:30px;">Escolha uma técnica e siga o círculo por 2 minutos.</p>
-            <div class="breathing-exercise" id="breathingBox">
-                <h3 id="breathingName">Respiração Diafragmática</h3>
-                <div class="breathing-circle" id="breathingCircle">Inspira</div>
-                <div class="breathing-timer" id="breathingTimer">02:00</div>
-                <button class="btn btn-primary" id="breathingStart">Iniciar</button>
-                <div style="margin-top:15px;">
-                    <button class="btn btn-sm btn-secondary" onclick="switchBreathing(0)">Diafragmática</button>
-                    <button class="btn btn-sm btn-secondary" onclick="switchBreathing(1)">4-7-8</button>
-                    <button class="btn btn-sm btn-secondary" onclick="switchBreathing(2)">Box Breathing</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Frases Motivacionais -->
-    <div class="subpage" id="subpage-frases">
-        <button class="subpage-back" onclick="closeSubpage()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
-        <div class="subpage-content">
-            <h2 class="subpage-title">🌟 Frases Motivacionais</h2>
-            <div class="quote-box" id="quoteDisplay">"Acredite em você mesmo e tudo será possível."</div>
-            <button class="btn btn-primary" onclick="newQuote()">Nova Frase</button>
-            <button class="btn btn-secondary" onclick="favoriteQuote()" style="margin-left:10px;"><i class="fa-regular fa-heart"></i> Favoritar</button>
-            <div class="diary-entries" id="favQuotes" style="margin-top:20px;"></div>
-        </div>
-    </div>
-    <!-- Espaço de Apoio -->
-    <div class="subpage" id="subpage-apoio">
-        <button class="subpage-back" onclick="closeSubpage()"><i class="fa-solid fa-arrow-left"></i> Voltar</button>
-        <div class="subpage-content">
-            <h2 class="subpage-title">💬 Espaço de Apoio</h2>
-            <p style="text-align:center;">Você não está sozinho. Conte com esses recursos.</p>
-            <div class="support-number">188</div>
-            <p style="text-align:center; font-size:1.2rem;">Central de Valorização da Vida (CVV)</p>
-            <p style="text-align:center;">Ligue gratuitamente ou acesse o chat online 24h.</p>
-            <div class="support-links">
-                <a href="https://www.cvv.org.br" target="_blank"><i class="fa-solid fa-globe"></i> Site do CVV</a>
-                <a href="https://www.cvv.org.br/chat" target="_blank"><i class="fa-solid fa-comments"></i> Chat Online</a>
-                <a href="https://www.gov.br/saude" target="_blank"><i class="fa-solid fa-hospital"></i> Ministério da Saúde</a>
-                <a href="https://www.setembroamarelo.com" target="_blank"><i class="fa-solid fa-ribbon"></i> Setembro Amarelo</a>
-                <a href="https://www.paho.org" target="_blank"><i class="fa-solid fa-earth-americas"></i> OPAS/OMS</a>
-            </div>
-        </div>
     </div>
 
     <!-- SCRIPTS -->
